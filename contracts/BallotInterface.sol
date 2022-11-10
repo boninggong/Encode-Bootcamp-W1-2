@@ -9,7 +9,7 @@ interface IBallot {
 
     function vote(uint256 proposal) external;
 
-    function winningProposal() external view returns (uint256 winningProposal_);
+    function winningProposal() external view returns (uint256 winningProposalNumber);
 
-    function winnerName() external view returns (string memory winnerName_);
+    function winnerName() external view returns (string memory winningProposalName);
 }
