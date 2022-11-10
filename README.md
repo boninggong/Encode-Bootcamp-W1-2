@@ -1,13 +1,3 @@
 # Sample Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
-```
+This repository contains all my work as part of the Encode Solidity Bootcamp, which is a selective 8 week intensive Bootcamp in which Solidity and blockchain programming is taught. For more information on this Bootcamp, please see https://www.encode.club/solidity-bootcamps
