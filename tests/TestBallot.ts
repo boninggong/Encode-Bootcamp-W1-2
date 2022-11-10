@@ -1,4 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { deployContract } from "@nomiclabs/hardhat-ethers/types";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Ballot } from "../typechain-types/Ballot";
@@ -97,9 +98,52 @@ describe("Ballot", () => {
       expect(ballotContract.connect(accounts[2]).delegate(accounts[3].address)).to.be.revertedWith("You have no right to vote");
     });
   });
+
+  describe("when someone interact with the winningProposal function before any votes are cast", function () {
+    // TODO
+    it("should return 0", async () => {
+      expect(await ballotContract.winningProposal()).to.equal(0);
+    });
+  });
+
+  describe("when someone interact with the winnerName function before any votes are cast", function () {
+    // TODO
+    it("should return name of proposal 0", async () => {
+      const proposalName = await ballotContract.winnerName();
+      expect(ethers.utils.parseBytes32String(proposalName)).to.equal(PROPOSALS[0]);
+    });
+  });
+
+  describe("when someone interact with the winningProposal function after one vote is cast for the first proposal", function () {
+    // TODO
+    it("should return 0", async () => {
+      await ballotContract.vote(0);
+      expect(await ballotContract.connect(accounts[1]).winningProposal()).to.equal(0);
+    });
+  });
+  
+  describe("when someone interact with the winnerName function after one vote is cast for the first proposal", function () {
+    // TODO
+    it("should return name of proposal 0", async () => {
+      await ballotContract.vote(0);
+      const proposalName = await ballotContract.connect(accounts[1]).winnerName();
+      expect(ethers.utils.parseBytes32String(proposalName)).to.equal(PROPOSALS[0]);
+    });
+  });
+
+  describe("when someone interact with the winningProposal function and winnerName after 5 random votes are cast for the proposals", function () {
+    // TODO
+    it("should return the name of the winner proposal", async () => {
+      for (let index = 1; index < 5; index++) {
+        await ballotContract.giveRightToVote(accounts[index].address);
+        await ballotContract.connect(accounts[index]).vote(1);
+      }
+      const proposalName = await ballotContract.winnerName();
+      expect(ethers.utils.parseBytes32String(proposalName)).to.equal(PROPOSALS[1]);
+    });
+  });
     
 });
-
 
 function convertStringArrayToBytes32(array: string[]) {
   const bytes32Array = [];
@@ -108,42 +152,3 @@ function convertStringArrayToBytes32(array: string[]) {
   }
   return bytes32Array;
 }
-
-
-
-
-//   describe("when someone interact with the winningProposal function before any votes are cast", function () {
-//     // TODO
-//     it("should return 0", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-
-//   describe("when someone interact with the winningProposal function after one vote is cast for the first proposal", function () {
-//     // TODO
-//     it("should return 0", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-
-//   describe("when someone interact with the winnerName function before any votes are cast", function () {
-//     // TODO
-//     it("should return name of proposal 0", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-
-//   describe("when someone interact with the winnerName function after one vote is cast for the first proposal", function () {
-//     // TODO
-//     it("should return name of proposal 0", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-
-//   describe("when someone interact with the winningProposal function and winnerName after 5 random votes are cast for the proposals", function () {
-//     // TODO
-//     it("should return the name of the winner proposal", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-// });
