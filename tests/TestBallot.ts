@@ -79,35 +79,30 @@ describe("Ballot", () => {
   });
 
   describe("when an attacker interacts with the vote function in the contract", function () {
-    // TODO
     it("should revert", async () => {
       expect(ballotContract.connect(accounts[2]).vote(0)).to.be.revertedWith("Has no right to vote");
     });
   });
   
   describe("when an attacker interacts with the giveRightToVote function in the contract", function () {
-    // TODO
     it("should revert", async () => {
       expect(ballotContract.connect(accounts[2]).giveRightToVote(accounts[3].address)).to.be.revertedWith("Only chairperson can give right to vote.");
     });
   });
   
   describe("when the an attacker interact with the delegate function in the contract", function () {
-    // TODO
     it("should revert", async () => {
       expect(ballotContract.connect(accounts[2]).delegate(accounts[3].address)).to.be.revertedWith("You have no right to vote");
     });
   });
 
   describe("when someone interact with the winningProposal function before any votes are cast", function () {
-    // TODO
     it("should return 0", async () => {
       expect(await ballotContract.winningProposal()).to.equal(0);
     });
   });
 
   describe("when someone interact with the winnerName function before any votes are cast", function () {
-    // TODO
     it("should return name of proposal 0", async () => {
       const proposalName = await ballotContract.winnerName();
       expect(ethers.utils.parseBytes32String(proposalName)).to.equal(PROPOSALS[0]);
@@ -115,7 +110,6 @@ describe("Ballot", () => {
   });
 
   describe("when someone interact with the winningProposal function after one vote is cast for the first proposal", function () {
-    // TODO
     it("should return 0", async () => {
       await ballotContract.vote(0);
       expect(await ballotContract.connect(accounts[1]).winningProposal()).to.equal(0);
@@ -123,7 +117,6 @@ describe("Ballot", () => {
   });
   
   describe("when someone interact with the winnerName function after one vote is cast for the first proposal", function () {
-    // TODO
     it("should return name of proposal 0", async () => {
       await ballotContract.vote(0);
       const proposalName = await ballotContract.connect(accounts[1]).winnerName();
@@ -132,7 +125,6 @@ describe("Ballot", () => {
   });
 
   describe("when someone interact with the winningProposal function and winnerName after 5 random votes are cast for the proposals", function () {
-    // TODO
     it("should return the name of the winner proposal", async () => {
       for (let index = 1; index < 5; index++) {
         await ballotContract.giveRightToVote(accounts[index].address);
@@ -140,6 +132,36 @@ describe("Ballot", () => {
       }
       const proposalName = await ballotContract.winnerName();
       expect(ethers.utils.parseBytes32String(proposalName)).to.equal(PROPOSALS[1]);
+    });
+  });
+
+  describe("when chairPerson resets the ballot through fullResetOfBallot", function () {
+    it("should return proposal 0 as winning proposal", async () => {
+      for (let index = 1; index < 5; index++) {
+        await ballotContract.giveRightToVote(accounts[index].address);
+        await ballotContract.connect(accounts[index]).vote(1);
+      }
+      await ballotContract.resetBallot();
+      const proposalName = await ballotContract.winnerName();
+      expect(ethers.utils.parseBytes32String(proposalName)).to.equal(PROPOSALS[0]);
+      expect((await ballotContract.voters(accounts[2].address)).weight).to.equal(0);
+    });
+    
+    it("should reset the weight of vote of everyone, except chairperson, to 0", async () => {
+      for (let index = 1; index < 5; index++) {
+        await ballotContract.giveRightToVote(accounts[index].address);
+        await ballotContract.connect(accounts[index]).vote(1);
+      }
+      await ballotContract.resetBallot();
+      const proposalName = await ballotContract.winnerName();
+      for (let index = 1; index < 5; index++) {
+        const voter = await ballotContract.voters(accounts[index].address);
+        expect(voter.weight).to.equal(0);
+      }
+    });
+
+    it("should not allow other addresses to try to reset the contract", async () => {
+      expect(ballotContract.connect(accounts[1]).resetBallot()).to.be.reverted;
     });
   });
     

@@ -1,8 +1,9 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { ethers } from "hardhat";
-import { Ballot } from "../typechain-types";
+import { ethers } from "ethers";
+import { Ballot, Ballot__factory } from "../typechain-types";
 
-const PROPOSALS = ["Proposal 1", "Proposal 2", "Proposal 3"];
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 function convertStringArrayToBytes32(array: string[]) {
     const bytes32Array = [];
@@ -12,7 +13,17 @@ function convertStringArrayToBytes32(array: string[]) {
     return bytes32Array;
 }
 
+// Deploys the enhanced ballot contract to the Goerli network 
 async function main() {
+    const provider = ethers.getDefaultProvider("goerli");
+    console.log(process.env.PRIVATE_KEY);
+
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY ?? "");
+    console.log(wallet);
+
+    const signer = wallet.connect(provider);
+    console.log((await signer.getBalance()).toString());
+
     const args = process.argv;
     const proposals = args.slice(2);
     if(proposals.length <= 0) {
@@ -21,11 +32,8 @@ async function main() {
     console.log(proposals);
 
     let ballotContract: Ballot;
-    let accounts: SignerWithAddress[];
-
-    accounts = await ethers.getSigners();
-    const ballotFactory = await ethers.getContractFactory("Ballot");
-    ballotContract = await ballotFactory.deploy(convertStringArrayToBytes32(PROPOSALS));
+    const ballotFactory = new Ballot__factory(signer);
+    ballotContract = await ballotFactory.deploy(proposals);
     await ballotContract.deployed();
 
     console.log("Deploying Ballot contract");
@@ -34,7 +42,7 @@ async function main() {
         console.log(`Proposal N. ${index + 1}: ${element}`);
     });
     
-console.log(`Contract deployed at ${ballotContract.address}`);
+    console.log(`Contract deployed at ${ballotContract.address}`);
 
 }
 
