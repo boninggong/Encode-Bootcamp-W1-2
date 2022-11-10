@@ -60,6 +60,43 @@ describe("Ballot", () => {
       expect(ballotContract.giveRightToVote(accounts[1].address)).to.be.revertedWith("The voter already voted.");
     });
   });
+
+  describe("when the voter interact with the vote function in the contract", function () {
+    it("should register the vote", async () => {
+      await ballotContract.vote(0);
+      const proposal = await ballotContract.proposals(0);
+      expect(proposal.voteCount).to.equal(1);
+    });
+  });
+
+  describe("when the voter interact with the delegate function in the contract", function () {
+    it("should transfer voting power", async () => {
+      await ballotContract.giveRightToVote(accounts[1].address);
+      await ballotContract.delegate(accounts[1].address);
+      expect((await ballotContract.voters(accounts[1].address)).weight).to.equal(2);
+    });
+  });
+
+  describe("when an attacker interacts with the vote function in the contract", function () {
+    // TODO
+    it("should revert", async () => {
+      expect(ballotContract.connect(accounts[2]).vote(0)).to.be.revertedWith("Has no right to vote");
+    });
+  });
+  
+  describe("when an attacker interacts with the giveRightToVote function in the contract", function () {
+    // TODO
+    it("should revert", async () => {
+      expect(ballotContract.connect(accounts[2]).giveRightToVote(accounts[3].address)).to.be.revertedWith("Only chairperson can give right to vote.");
+    });
+  });
+  
+  describe("when the an attacker interact with the delegate function in the contract", function () {
+    // TODO
+    it("should revert", async () => {
+      expect(ballotContract.connect(accounts[2]).delegate(accounts[3].address)).to.be.revertedWith("You have no right to vote");
+    });
+  });
     
 });
 
@@ -74,40 +111,6 @@ function convertStringArrayToBytes32(array: string[]) {
 
 
 
-//   describe("when the voter interact with the vote function in the contract", function () {
-//     // TODO
-//     it("should register the vote", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-
-//   describe("when the voter interact with the delegate function in the contract", function () {
-//     // TODO
-//     it("should transfer voting power", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-
-//   describe("when the an attacker interact with the giveRightToVote function in the contract", function () {
-//     // TODO
-//     it("should revert", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-
-//   describe("when the an attacker interact with the vote function in the contract", function () {
-//     // TODO
-//     it("should revert", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
-
-//   describe("when the an attacker interact with the delegate function in the contract", function () {
-//     // TODO
-//     it("should revert", async () => {
-//       throw Error("Not implemented");
-//     });
-//   });
 
 //   describe("when someone interact with the winningProposal function before any votes are cast", function () {
 //     // TODO
