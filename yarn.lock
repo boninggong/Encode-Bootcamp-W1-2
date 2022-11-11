@@ -5191,7 +5191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.3.1":
+"prettier@npm:^2.3.1, prettier@npm:^2.7.1":
   version: 2.7.1
   resolution: "prettier@npm:2.7.1"
   bin:
@@ -5229,6 +5229,7 @@ __metadata:
     hardhat: ^2.12.2
     hardhat-gas-reporter: ^1.0.8
     mocha: ^10.1.0
+    prettier: ^2.7.1
     solidity-coverage: ^0.8.0
     ts-node: ">=8.0.0"
     typechain: ^8.1.0
