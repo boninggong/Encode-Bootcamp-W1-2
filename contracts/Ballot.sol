@@ -88,7 +88,7 @@ contract Ballot {
   // Give `voter` the right to vote on this ballot.
   // May only be called by `chairperson`.
   function giveRightToVote(address voter) external onlyChairPerson {
-    require(!voters[voter].voted, 'The voter already voted.');
+    require(!voters[voter].voted, "The voter already voted.");
     require(voters[voter].weight == 0);
     voters[voter].weight = 1;
     votersAddresses.push(voter);
@@ -99,10 +99,10 @@ contract Ballot {
   function delegate(address to) external {
     // assigns reference
     Voter storage sender = voters[msg.sender];
-    require(sender.weight != 0, 'You have no right to vote');
-    require(!sender.voted, 'You already voted.');
+    require(sender.weight != 0, "You have no right to vote");
+    require(!sender.voted, "You already voted.");
 
-    require(to != msg.sender, 'Self-delegation is disallowed.');
+    require(to != msg.sender, "Self-delegation is disallowed.");
 
     // Forward the delegation as long as
     // `to` also delegated.
@@ -116,7 +116,7 @@ contract Ballot {
       to = voters[to].delegate;
 
       // We found a loop in the delegation, not allowed.
-      require(to != msg.sender, 'Found loop in delegation.');
+      require(to != msg.sender, "Found loop in delegation.");
     }
 
     Voter storage delegate_ = voters[to];
@@ -144,7 +144,7 @@ contract Ballot {
   /// to proposal `proposals[proposal].name`.
   function vote(uint256 proposal) external {
     Voter storage sender = voters[msg.sender];
-    require(sender.weight != 0, 'Has no right to vote');
+    require(sender.weight != 0, "Has no right to vote");
     // require(!sender.voted, "Already voted.");
 
     // If first time voting, add weight to voteCount

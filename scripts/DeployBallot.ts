@@ -1,8 +1,8 @@
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { ethers } from 'ethers';
-import { Ballot, Ballot__factory } from '../typechain-types';
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { ethers } from "ethers";
+import { Ballot, Ballot__factory } from "../typechain-types";
 
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 dotenv.config();
 
 function convertStringArrayToBytes32(array: string[]) {
@@ -15,10 +15,10 @@ function convertStringArrayToBytes32(array: string[]) {
 
 // Deploys the enhanced ballot contract to the Goerli network
 async function main() {
-  const provider = ethers.getDefaultProvider('goerli');
+  const provider = ethers.getDefaultProvider("goerli");
   console.log(process.env.PRIVATE_KEY);
 
-  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY ?? '');
+  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY ?? "");
   console.log(wallet);
 
   const signer = wallet.connect(provider);
@@ -27,7 +27,7 @@ async function main() {
   const args = process.argv;
   const proposals = args.slice(2);
   if (proposals.length <= 0) {
-    throw new Error('Not enough proposal arguments');
+    throw new Error("Not enough proposal arguments");
   }
   console.log(proposals);
 
@@ -36,8 +36,8 @@ async function main() {
   ballotContract = await ballotFactory.deploy(proposals);
   await ballotContract.deployed();
 
-  console.log('Deploying Ballot contract');
-  console.log('Proposals: ');
+  console.log("Deploying Ballot contract");
+  console.log("Proposals: ");
   proposals.forEach((element, index) => {
     console.log(`Proposal N. ${index + 1}: ${element}`);
   });

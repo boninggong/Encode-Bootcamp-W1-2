@@ -6,7 +6,7 @@ contract HelloWorld {
   address public owner;
 
   constructor() {
-    text = 'Hello World';
+    text = "Hello World";
     owner = msg.sender;
   }
 
@@ -23,7 +23,7 @@ contract HelloWorld {
   }
 
   modifier onlyOwner() {
-    require(msg.sender == owner, 'Caller is not the owner');
+    require(msg.sender == owner, "Caller is not the owner");
     _;
   }
 }
