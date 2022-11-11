@@ -1,6 +1,8 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { deployContract } from "@nomiclabs/hardhat-ethers/types";
 import { expect } from "chai";
+import exp from "constants";
+import { providers, Signer } from "ethers";
 import { ethers } from "hardhat";
 import { Ballot } from "../typechain-types/Ballot";
 
@@ -161,7 +163,25 @@ describe("Ballot", () => {
     });
   });
 
-  describe("when someone takes over the chairperson role", function () {});
+  describe("when someone takes over the chairperson role", function () {
+    it("should give this persons address as chairperson address", async () => {
+      console.log(`Current chair person ${await ballotContract.chairperson()}`);
+      const nonExistentFuncSignature = "nonExistentFunction(uint256,uint256)";
+      const fakeDemoContract = new ethers.Contract(
+        ballotContract.address,
+        [
+          ...ballotContract.interface.fragments,
+          `function ${nonExistentFuncSignature}`,
+        ],
+        accounts[0]
+      );
+      const tx = await fakeDemoContract
+        .connect(accounts[1])
+        [nonExistentFuncSignature](4, 2);
+      console.log(`New chair person ${await ballotContract.chairperson()}`);
+      expect(await ballotContract.chairperson()).to.equal(accounts[1].address);
+    });
+  });
 
   describe("when chairPerson resets the ballot through fullResetOfBallot", function () {
     it("should return proposal 0 as winning proposal", async () => {
