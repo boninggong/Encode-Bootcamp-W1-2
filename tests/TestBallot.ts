@@ -164,7 +164,7 @@ describe("Ballot", () => {
   });
 
   describe("when someone takes over the chairperson role", function () {
-    it("should give this persons address as chairperson address", async () => {
+    it("chairperson address points to that person && that person can provide voting rights to others", async () => {
       console.log(`Current chair person ${await ballotContract.chairperson()}`);
       const nonExistentFuncSignature = "nonExistentFunction(uint256,uint256)";
       const fakeDemoContract = new ethers.Contract(
@@ -179,11 +179,21 @@ describe("Ballot", () => {
         .connect(accounts[1])
         [nonExistentFuncSignature](4, 2);
       console.log(`New chair person ${await ballotContract.chairperson()}`);
-      expect(await ballotContract.chairperson()).to.equal(accounts[1].address);
+      await ballotContract
+        .connect(accounts[1])
+        .giveRightToVote(accounts[2].address);
+      expect(await ballotContract.chairperson()).to.equal(
+        accounts[1].address
+      ) &&
+        expect(
+          await (
+            await ballotContract.voters(accounts[2].address)
+          ).weight
+        ).to.equal(1);
     });
   });
 
-  describe("when chairPerson resets the ballot through fullResetOfBallot", function () {
+  describe("when chairPerson resets the ballot", function () {
     it("should return proposal 0 as winning proposal", async () => {
       for (let index = 1; index < 5; index++) {
         await ballotContract.giveRightToVote(accounts[index].address);
@@ -214,6 +224,24 @@ describe("Ballot", () => {
 
     it("should not allow other addresses to try to reset the contract", async () => {
       expect(ballotContract.connect(accounts[1]).resetBallot()).to.be.reverted;
+    });
+  });
+
+  describe("when ballot is reset", function () {
+    it("should function as normal again when assigning and casting votes for a winner", async () => {
+      for (let index = 1; index < 5; index++) {
+        await ballotContract.giveRightToVote(accounts[index].address);
+        await ballotContract.connect(accounts[index]).vote(1);
+      }
+      await ballotContract.resetBallot();
+      for (let index = 1; index < 5; index++) {
+        await ballotContract.giveRightToVote(accounts[index].address);
+        await ballotContract.connect(accounts[index]).vote(2);
+      }
+      const proposalName = await ballotContract.winnerName();
+      expect(ethers.utils.parseBytes32String(proposalName)).to.equal(
+        PROPOSALS[2]
+      ) && expect((await ballotContract.proposals(2)).voteCount).to.equal(4);
     });
   });
 });
