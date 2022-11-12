@@ -5,14 +5,6 @@ import { Ballot, Ballot__factory } from "../typechain-types";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-function convertStringArrayToBytes32(array: string[]) {
-  const bytes32Array = [];
-  for (let index = 0; index < array.length; index++) {
-    bytes32Array.push(ethers.utils.formatBytes32String(array[index]));
-  }
-  return bytes32Array;
-}
-
 // Deploys the enhanced ballot contract to the Goerli network
 async function main() {
   const provider = ethers.getDefaultProvider("goerli");
@@ -44,6 +36,14 @@ async function main() {
 
   console.log(`Contract deployed at ${ballotContract.address}`);
 }
+
+// function convertStringArrayToBytes32(array: string[]) {
+//   const bytes32Array = [];
+//   for (let index = 0; index < array.length; index++) {
+//     bytes32Array.push(ethers.utils.formatBytes32String(array[index]));
+//   }
+//   return bytes32Array;
+// }
 
 main().catch((error) => {
   console.error(error);
