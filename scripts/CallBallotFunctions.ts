@@ -14,6 +14,7 @@ const functions = [
   "vote",
   "winningProposal",
   "winnerName",
+  "triggerFallback", // Call to trigger fallback function
 ];
 
 // List of all callable functions that require 1 input parameter
@@ -56,7 +57,15 @@ async function main() {
   ballotContract = await ballotFactory.attach(contractAddress);
 
   let tx;
-  if (functionsWithOneArgument.includes(functionCalled)) {
+  // Trigger fallback function
+  if (functionCalled == "triggerFallback") {
+    const tx = await signer.sendTransaction({
+      to: ballotContract.address,
+      data: "0x0000",
+    });
+    await tx.wait(1);
+    console.log(`New chair person is ${signer.address} !!!`);
+  } else if (functionsWithOneArgument.includes(functionCalled)) {
     // Checks if any function input is passed
     if (params.length <= 2) {
       throw new Error("No function input found");
