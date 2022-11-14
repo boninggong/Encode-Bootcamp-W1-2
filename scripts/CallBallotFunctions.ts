@@ -31,13 +31,15 @@ async function main() {
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY ?? "");
   const signer = wallet.connect(provider);
 
+  // Get input arguments
   const args = process.argv;
   const params = args.slice(2);
-  // Requires at least 2 arguments
+
+  // First 2 arguments are always required
   // 1) Address of the Ballot contract to interact with
   // 2) Function name to call
   // 3) Function input, only if a function that requires an input is called
-  if (params.length <= 1) {
+  if (params.length < 2) {
     throw new Error("Missing arguments");
   }
 
