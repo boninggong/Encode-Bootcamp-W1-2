@@ -21,13 +21,13 @@ We have implemented our own [Ballot smart contract](https://github.com/boninggon
 
 A Typescript script [DeployBallot.ts](https://github.com/boninggong/Encode-Projects/blob/main/scripts/2_DeployBallot.ts) has been developed to deploy this Ballot contract and [CallBallotFunction.ts](https://github.com/boninggong/Encode-Projects/blob/main/scripts/2_CallBallotFunctions.ts) has been developed to interact with a deployed Ballot instance all on the Goerli network. Examples using CallBallotFunction.ts are:
 
-Trigger fallback (and therewith take over chairman status):
-
 Vote on 3rd proposal:
 
 ```typescript
 yarn run ts-node scripts/CallBallotFunctions.ts 0x07048F6Fc40C8cf962396e62D3D4dd83dB225a00 vote 2
 ```
+
+Trigger fallback (and therewith take over chairman status):
 
 ```typescript
 yarn run ts-node scripts/CallBallotFunctions.ts 0x07048F6Fc40C8cf962396e62D3D4dd83dB225a00 triggerFallback
